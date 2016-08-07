@@ -11,33 +11,26 @@
       <md-content layout-padding>
         <div layout="column" class="col s5">
           <md-input-container class="md-block">
-            <label>Query</label>
+            <label>Search for</label>
             <input ng-model="main.query" type="text">
           </md-input-container>
-          <md-button class="md-raised md-primary" ng-click="main.search()">search</md-button>
+          <md-button class="md-raised md-primary" ng-hide="main.showLoading" ng-click="main.search()">search</md-button>
+          <md-progress-circular md-mode="indeterminate" ng-show="main.showLoading"></md-progress-circular>
         </div>
       </md-content>
 
-      <md-content layout-gt-sm="row" layout-padding ng-show="main.articles">
-        <md-list flex>
-          <md-subheader class="md-no-sticky">Search Results</md-subheader>
-          <md-list-item class="md-2-line" ng-repeat="article in main.articles">
-            <md-card class="md-list-item-text" layout="column">
-              <md-card-title-text>
-                <span class="md-headline" ng-bind="article.title"></span>
-              </md-card-title-text>
-              <md-list flex ng-show="article.audio.length > 0">
-                <md-subheader class="md-no-sticky">Clips</md-subheader>
-                <md-list-item class="md-1-line" ng-repeat="clip in article.audio">
-                  <md-button ng-click="main.play(clip)" class="md-primary">listen</md-button>
-                </md-list-item>
-              </md-list>
-            </md-card>
-          </md-list-item>
-        </md-list>
-        <div >
-          {{article.title}}
-        </div>
+      <md-content layout-gt-sm="column" layout-padding ng-show="main.articles">
+        <md-subheader class="md-no-sticky">Search Results:</md-subheader>
+        <md-card class="md-list-item-text" layout="column" ng-repeat="article in main.articles">
+          <md-card-title-text>
+            <span class="md-headline" ng-bind="article.title"></span>
+          </md-card-title-text>
+          <md-list flex ng-show="article.audio.length > 0">
+            <md-list-item class="md-1-line" ng-repeat="clip in article.audio">
+              <md-button ng-click="main.play(clip)" class="md-primary">play clip</md-button>
+            </md-list-item>
+          </md-list>
+        </md-card>
       </md-content>
     </div>
   </md-content>

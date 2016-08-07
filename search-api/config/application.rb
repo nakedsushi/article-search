@@ -28,7 +28,7 @@ module SearchApi
     config.api_only = true
 
     # cors
-    config.middleware.insert_before 0, "Rack::Cors" do
+    config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins 'localhost:9000'
         resource '*', :headers => :any, :methods => [:get, :post, :options]

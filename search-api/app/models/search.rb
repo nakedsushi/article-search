@@ -7,19 +7,21 @@ class Search < ApplicationRecord
   URL = 'http://www.scpr.org/api/v3/articles?query='
 
   def self.query(q)
-    response = HTTParty.get(URL + q)
-    if response['articles']
-      articles = []
-      response['articles'].each do |article|
-        articles.push({
-          'title': article['title'],
-          'audio': self.extract_audio(article)
-        })
+    q = CGI::escape(q)
+    if response = HTTParty.get(URL + q)
+      if response['articles']
+        articles = []
+        response['articles'].each do |article|
+          articles.push({
+            'title': article['title'],
+            'audio': self.extract_audio(article)
+          })
+        end
+        return articles
       end
-      return articles
-    else
-      return []
     end
+
+    return []
   end
 
   def self.extract_audio(article)

@@ -1,16 +1,17 @@
 export class MainController {
-  constructor ($log, ngAudio, searchService) {
+  constructor (ngAudio, searchService) {
     'ngInject';
 
     this.searchService = searchService;
-    this.$log = $log;
     this.ngAudio = ngAudio;
   }
 
   search() {
     const that = this;
+    this.showLoading = true;
     if (this.query) {
-      this.searchService.save({search: this.query}, function(response) {
+      this.searchService.save({search: this.query}, response => {
+        this.showLoading = false;
         that.articles = response.articles;
       });
     }

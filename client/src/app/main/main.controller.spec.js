@@ -1,32 +1,63 @@
 describe('controllers', () => {
   let vm;
+  let mockSearchService;
+  let $rootScope;
+  let $q;
+  let queryDeferred;
 
   beforeEach(angular.mock.module('articleSearch'));
-
-  beforeEach(inject(($controller, webDevTec, toastr) => {
-    spyOn(webDevTec, 'getTec').and.returnValue([{}, {}, {}, {}, {}]);
-    spyOn(toastr, 'info').and.callThrough();
-
-    vm = $controller('MainController');
+  beforeEach(inject( (_$q_, _$rootScope_) => {
+    $q = _$q_;
+    $rootScope = _$rootScope_;
   }));
 
-  it('should have a timestamp creation date', () => {
-    expect(vm.creationDate).toEqual(jasmine.any(Number));
-  });
+  beforeEach(inject(($controller) => {
+    mockSearchService =  {
+      save: (query, fn) => {
+        queryDeferred = $q.defer();
+        return {$promise: queryDeferred.promise.then(response => {
+          fn(response);
+        })};
+      }
+    };
 
-  it('should define animate class after delaying timeout', inject($timeout => {
-    $timeout.flush();
-    expect(vm.classAnimation).toEqual('rubberBand');
+    spyOn(mockSearchService, 'save').and.callThrough();
+
+    vm = $controller('MainController', {searchService: mockSearchService});
   }));
 
-  it('should show a Toastr info and stop animation when invoke showToastr()', inject(toastr => {
-    vm.showToastr();
-    expect(toastr.info).toHaveBeenCalled();
-    expect(vm.classAnimation).toEqual('');
-  }));
+  describe('search', () => {
+    it('should not hit the API if query is blank', () => {
+      vm.search();
+      expect(mockSearchService.save).not.toHaveBeenCalled();
+      expect(vm.articles).toBeEmpty;
+    });
 
-  it('should define more than 5 awesome things', () => {
-    expect(angular.isArray(vm.awesomeThings)).toBeTruthy();
-    expect(vm.awesomeThings.length === 5).toBeTruthy();
+    it('should not populate articles if response is empty', () => {
+      vm.query = 'mini onions';
+      vm.search();
+
+      queryDeferred.resolve({articles: []});
+      $rootScope.$apply();
+
+      expect(vm.articles).toBeEmpty;
+    });
+
+    it('should populate articles if the response has articles', () => {
+      vm.query = 'mini onions';
+      vm.search();
+
+      queryDeferred.resolve({articles: [
+        {title: 'I love onions'},
+        {title: 'Only sweet ones'}
+      ]});
+      $rootScope.$apply();
+
+      expect(mockSearchService.save).toHaveBeenCalled();
+      expect(vm.articles).toEqual([
+        {title: 'I love onions'},
+        {title: 'Only sweet ones'}
+      ]);
+    });
   });
 });

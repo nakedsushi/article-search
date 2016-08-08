@@ -37,15 +37,17 @@ class Search < ApplicationRecord
           open(file_name, 'wb') do |file|
             file << open(audio['url']).read
           end
+          ffprobe = `ffprobe -v quiet -print_format json -show_format -show_streams #{file_name}`
           trimmer = AudioTrimmer.new(input: file_name)
           trimmer.trim start:0, finish:10, output: short_file.to_s
-          trimmed_audio = Audio.new(url: audio['url'])
+          trimmed_audio = Audio.new(url: audio['url'], meta: ffprobe)
           trimmed_audio.clip = File.new(short_file)
           trimmed_audio.save
-          audio_array.push(trimmed_audio)
+          audio_array.push(AudioSerializer.new(trimmed_audio))
         end
+        system(`rm #{file_name}`)
+        system(`rm #{short_file}`)
       end
-      # TODO: remove audio in /tmp directory
       return audio_array
     end
     return []

@@ -19,7 +19,7 @@
         </div>
       </md-content>
 
-      <md-content layout-gt-sm="column" layout-padding ng-show="main.articles">
+      <md-content layout-gt-sm="column" layout-padding ng-show="main.articles" ng-hide="main.showLoading">
         <md-subheader class="md-no-sticky">Search Results:</md-subheader>
         <md-card class="md-list-item-text" layout="column" ng-repeat="article in main.articles">
           <md-card-title-text>
@@ -28,6 +28,7 @@
           <md-list flex ng-show="article.audio.length > 0">
             <md-list-item class="md-1-line" ng-repeat="clip in article.audio">
               <md-button ng-click="main.play(clip)" class="md-primary">play clip</md-button>
+              Bitrate: {{clip['extra']['streams'][0]['bit_rate']}}bit/s  |  Codec: {{clip['extra']['streams'][0]['codec_long_name']}}
             </md-list-item>
           </md-list>
         </md-card>

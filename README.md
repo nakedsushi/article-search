@@ -12,7 +12,7 @@ The client (client/) is an AngularJS app.  All app related tasks from testing to
 * Rails 5
 * Postgres
 * Angular JS
-
+* [ffprobe](https://ffmpeg.org/download.html)
 
 ## Usage
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160806224648) do
+ActiveRecord::Schema.define(version: 20160808042848) do
 
   create_table "audios", force: :cascade do |t|
     t.string   "url"
@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 20160806224648) do
     t.string   "clip_content_type"
     t.integer  "clip_file_size"
     t.datetime "clip_updated_at"
+    t.text     "meta"
   end
 
   create_table "searches", force: :cascade do |t|

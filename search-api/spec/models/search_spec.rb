@@ -24,7 +24,7 @@ RSpec.describe Search, :type => :model do
 
       response = Search.extract_audio(article)
       expect(response.size).to eq(2)
-      expect(response).to all(be_a(Audio))
+      expect(response).to all(be_a(AudioSerializer))
     end
 
     it 'returns an empty array if article does not have audio' do
